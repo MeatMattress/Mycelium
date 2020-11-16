@@ -9,7 +9,7 @@ class Branch {
 	draw() {
 		var canvas = document.getElementById("canvas");
 		var ctx = canvas.getContext('2d');
-		ctx.strokeStyle = "0000FF";
+		ctx.strokeStyle = "#00FF00";
 		ctx.beginPath();
 		ctx.moveTo(this.p1.x, this.p1.y);
 		ctx.lineTo(this.p2.x, this.p2.y);

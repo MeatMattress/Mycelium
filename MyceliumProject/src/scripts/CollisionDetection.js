@@ -1,16 +1,4 @@
-function collisionBranchBranchPast(a,b,c,d,p,q,r,s) {
-  var det, gamma, lambda;
-  det = (c - a) * (s - q) - (r - p) * (d - b);
-  if (det === 0) {
-    return false;
-  } else {
-    lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
-    gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
-    return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
-  }
-};
-
-function collisionBranchBranch(b1, b2) { // Branch 1 and Branch 2 ([a,b], [c,d]) | ([p,q], [r,s])
+/*function collisionBranchBranch(b1, b2) { // Branch 1 and Branch 2 ([a,b], [c,d]) | ([p,q], [r,s])
 	var det, gamma, lambda;
 	det = (b1.p2.x - b1.p1.x) * (b2.p2.y - b2.p1.y) - (b2.p2.x - b2.p1.x) * (b1.p2.y - b1.p1.y);
 	if (det === 0) return false;
@@ -20,37 +8,61 @@ function collisionBranchBranch(b1, b2) { // Branch 1 and Branch 2 ([a,b], [c,d])
 		return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
 	}
 }
+*/
+function intersect(b1, b2) {
+  // b1.p1.x, b1.p1.y, b1.p2.x, b1.p2.y, b2.p1.x, b2.p1.y, b2.p2.x, b2.p2.y
 
-function collisionfoodNodebranch(foodNode,branch){ // Both are objects
+  // Check if none of the lines are of length 0
+    if ((b1.p1.x === b1.p2.x && b1.p1.y === b1.p2.y) || (b2.p1.x === b2.p2.x && b2.p1.y === b2.p2.y)) {
+        return false
+    }
 
-    var side1 = Math.sqrt(Math.pow(foodNode.p.x - branch.p1.x,2) + Math.pow(foodNode.p.y - branch.p1.y,2)); // Thats the pythagoras theoram If I can spell it right
+    denominator = ((b2.p2.y - b2.p1.y) * (b1.p2.x - b1.p1.x) - (b2.p2.x - b2.p1.x) * (b1.p2.y - b1.p1.y))
 
-    var side2 = Math.sqrt(Math.pow(foodNode.p.x - branch.p2.x,2) + Math.pow(foodNode.p.y - branch.p2.y,2));
+  // Lines are parallel
+    if (denominator === 0) {
+        return false
+    }
 
-    var base = Math.sqrt(Math.pow(branch.p2.x - branch.p1.x,2) + Math.pow(branch.p2.y - branch.p1.y,2));
+    let ua = ((b2.p2.x - b2.p1.x) * (b1.p1.y - b2.p1.y) - (b2.p2.y - b2.p1.y) * (b1.p1.x - b2.p1.x)) / denominator
+    let ub = ((b1.p2.x - b1.p1.x) * (b1.p1.y - b2.p1.y) - (b1.p2.y - b1.p1.y) * (b1.p1.x - b2.p1.x)) / denominator
 
-    if(foodNode.radius > side1 || foodNode.radius > side2)
-        return true;
+  // is the intersection along the segments
+    if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+        return false
+    }
 
-    var angle1 = Math.atan2( branch.p2.x - branch.p1.x, branch.p2.y - branch.p1.y ) - Math.atan2( foodNode.p.x - branch.p1.x, foodNode.p.y - branch.p1.y ); // Some complicated Math
+  // Return a object with the x and y coordinates of the intersection
+    let x = b1.p1.x + ua * (b1.p2.x - b1.p1.x)
+    let y = b1.p1.y + ua * (b1.p2.y - b1.p1.y)
 
-    var angle2 = Math.atan2( branch.p1.x - branch.p2.x, branch.p1.y - branch.p2.y ) - Math.atan2( foodNode.p.x - branch.p2.x, foodNode.p.y - branch.p2.y ); // Some complicated Math again
+    return {x, y}
+}
 
-    if(angle1 > Math.PI / 2 || angle2 > Math.PI / 2) // Making sure if any angle is an obtuse one and Math.PI / 2 = 90 deg
+function collisionBranchFoodNode(circle, line){
+    var b, c, d, u1, intersectionPoint, v1, v2;
+    v1 = {};
+    v2 = {};
+    v1.x = line.p2.x - line.p1.x;
+    v1.y = line.p2.y - line.p1.y;
+    v2.x = line.p1.x - circle.p.x;
+    v2.y = line.p1.y - circle.p.y;
+    b = (v1.x * v2.x + v1.y * v2.y);
+    c = 2 * (v1.x * v1.x + v1.y * v1.y);
+    b *= -2;
+    d = Math.sqrt(b * b - 2 * c * (v2.x * v2.x + v2.y * v2.y - circle.radius * circle.radius));
+    if(isNaN(d)){ // no intercept
         return false;
-
-
-        // Now if none are true then
-
-        var semiperimeter = (side1 + side2 + base) / 2;
-
-        var areaOfTriangle = Math.sqrt( semiperimeter * (semiperimeter - side1) * (semiperimeter - side2) * (semiperimeter - base) ); // Heron's formula for the area
-
-        var height = 2*areaOfTriangle/base;
-
-        if( height < foodNode.radius )
-            return true;
-        else
-            return false;
-
+    }
+    else { // intercept found, further test the line to see if it's within the segment
+      u1 = (b - d) / c;  // these represent the unit distance of point one and two on the line
+      u2 = (b + d) / c;    
+      intersectionPoint = {};   // return point
+      if(u1 <= 1 && u1 >= 0){  // add point if on the line segment
+          intersectionPoint.x = line.p1.x + v1.x * u1;
+          intersectionPoint.y = line.p1.y + v1.y * u1;
+      }
+      if ($.isEmptyObject(intersectionPoint)) return false; // none found on the segment either
+      return intersectionPoint;
+    }
 }

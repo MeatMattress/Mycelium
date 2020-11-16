@@ -7,8 +7,5 @@ $(document).ready(() => {
 	var height = canvas.height;
 	var center = new PVector(width/2, height/2);
 	// main loop
-	for (var i=0;i<6;i++) {
-		var food = new FoodNode();
-		food.draw();
-	}
+	
 });
