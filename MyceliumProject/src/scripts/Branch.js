@@ -6,10 +6,10 @@ class Branch {
 		this.parents = parents;
 	}
 
-	draw() {
+	draw(color = "#00FF00") {
 		var canvas = document.getElementById("canvas");
 		var ctx = canvas.getContext('2d');
-		ctx.strokeStyle = "#00FF00";
+		ctx.strokeStyle = color;
 		ctx.beginPath();
 		ctx.moveTo(this.p1.x, this.p1.y);
 		ctx.lineTo(this.p2.x, this.p2.y);
