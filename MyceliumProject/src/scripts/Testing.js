@@ -19,23 +19,11 @@ $(document).ready(() => {
 	var branch = new Branch(PVector1, PVector2); // A branch is a Vector in the context of this project.
 	branch.draw();
 
-	console.log("The center is " + center);
-	console.log("Vector1_PVector1 (Red) is: "+branch.p1);
-	console.log("Vector1_Pvector2 (Blue) is: "+branch.p2);
-	
-	var vector1_PVector2 = new Spore(new PVector(branch.p2.x-3, branch.p2.y-2)); // using this to display PVector2 of the line
-	vector1_PVector2.draw();
+	var newVec = newVector(branch, 30, 70, engine);
+	console.log(newVec);
 
-	console.log("The supposed angle is: "+getAngle(branch));
-
-	var Vector2_PVector1 = new PVector(engine.findPartWay(branch, Math.random()));// This is the first point on the new line. The second point which you will create will stem from this point.
-	
-	var displayVector2_PVector1 = new Spore(Vector2_PVector1);
-	displayVector2_PVector1.draw("#8400b8"); // displaying Vector2_PVector1
-
-	console.log("Vector2_PVector1 (purple) is: "+displayVector2_PVector1.p);
-
-	// Create vector2_PVector2 below this line by creating newVector(angle, magnitude) at the bottom of this page:
+	sporeTest = new Spore(newVec);
+	sporeTest.draw();
 
 
 
@@ -72,7 +60,39 @@ function getAngle(vector) { // FIXME/REWRITE: RETURNS INCORRECT ANGLE FOR ANYTHI
 	return ((Math.atan(angle)) * (180 / Math.PI));
 }
 
+var addAngle = function(angle1, angle2) { // Finds the sum of two angles
+	if (angle1 + angle2 > 360) {
+		return (angle1 + angle2) - 360;
+	} else {
+		return angle1 + angle2;
+	}
+}
+
+var subtractAngle = function(angle1, angle2) { // Finds the difference between twon angles
+	if (angle1 - angle2 < 0) {
+		return 360 - Math.abs(angle1 - angle2);
+	} else {
+		return angle1 - angle2;
+	}
+}
+
 // This function will be placed in BranchEngine.js when finished testing here
-function newVector(angle, magnitude) {
+function newVector(vector1, angle, magnitude, engine) {
+	console.log("recived vector", vector1);
+	console.log("recived engine", engine);
+	vector1_angle = getAngle(vector1);
+	min = subtractAngle(vector1_angle, angle);
+	max = addAngle(vector1_angle, angle);
+	p1 = engine.findPartWay(vector1, 0.25)
+	random_angle = Math.floor(Math.random() * (max - min + 1)) + min;
+	x = p1.x + magnitude * Math.cos(random_angle);
+	y = p1.y + magnitude * Math.sin(random_angle);
+	return new PVector(x, y);
+}
+
+function update() {
+
+}
+function draw() {
 
 }

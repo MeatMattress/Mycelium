@@ -16,4 +16,5 @@ class Spore {
 		this.ctx.fillStyle = color;
 		this.ctx.fillRect(this.p.x, this.p.y, 5, 5);
 	}
+	
 }
