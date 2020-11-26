@@ -5,62 +5,76 @@ $(document).ready(() => {
 	canvas.height = window.innerHeight;
 	var width = canvas.width;
 	var height = canvas.height;
-	var center = new PVector(width/2, height/2);
-
-	
-	// main tests
-	var spore = new Spore(new PVector(center.x - 3, center.y-3)); // just using this to display PVector1 of the line
-	spore.draw("#FF0000");
-	
-	var engine = new BranchEngine(spore);
-
-	var PVector1 = new PVector(center); // PVectors can either take a (vector) as a parameter, or (x,y) coordinates
-	var PVector2 = new PVector(center.x-30, center.y-40)
-	var branch = new Branch(PVector1, PVector2); // A branch is a Vector in the context of this project.
-	branch.draw();
-
-	var newVec = newVector(branch, 30, 70, engine);
-	console.log(newVec);
-
-	sporeTest = new Spore(newVec);
-	sporeTest.draw();
+	var center = new PVector(width / 2, height / 2);
 
 
+	var pv1 = new Spore(new PVector(center.x - 3, center.y - 3));
+	pv1.draw("#FF0000"); // This is your starting PVector1, shown in red.
+	var branch1 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y + 1));
+	var branch2 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y - 1));
+	var branch3 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y + 1));
+	var branch4 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y - 1));
+	var branch5 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y + 1));
+	var branch6 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y - 1));
+	var branch7 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y - 1));
+	var branch8 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y + 1));
 
+	test(pv1.p, branch1); // Spore.p = PVector
+	test(pv1.p, branch2);
+	test(pv1.p, branch3);
+	test(pv1.p, branch4);
+	test(pv1.p, branch5);
+	test(pv1.p, branch6);
+	test(pv1.p, branch7);
+	test(pv1.p, branch8);
 
 });
-function getAngle(vector) { // FIXME/REWRITE: RETURNS INCORRECT ANGLE FOR ANYTHING BUT ANGLES IN QUADRANT 1
-/* 
-	Formula for getting the angle of a vector, which is atan(slope_of_vector)
 
-	Must determine quadrant to get actual slope because y is always positive because the (x,y) axis is at (0,0)
-	The center of this canvas is (canvas_width / 2, canvas_height / 2), not (0,0).
-	The Y axis INCREASES as you move downwards.
-	Keep this in mind when determining the quadrant of the vector's (p2.x, p2.y) because the rise/run calculation
-	will be different depending on the difference between y2 and y1. 
-
-	Example: If the vector points downwards, (p2.y - p1.y) (which iis
-	actually positive, when it should be negative.
+/*
+	Should create 16 branching vectors pointing in VERY similar directions
+	(every vector within 20 degrees difference of the last)
 */
-	var angle;
+function test(pv1, startingVector) {
 
-	// if the vector points in the first quadrant, rise is positive and run is positive, so adjust the formula to fit, rise is now positive
-	if (vector.p2.x > vector.p1.x && vector.p2.y < vector.p1.y) angle = ((vector.p1.y - vector.p2.y) / (vector.p2.x - vector.p1.x));
-	
-	// if the vector is in the second quadrant, rise is positive but run is negative, so adjust the formula to fit, rise is now positive and run is now negative
-	else if (vector.p2.x < vector.p1.x && vector.p2.y < vector.p1.y) angle = ((vector.p1.y - vector.p2.y) / (vector.p2.x - vector.p1.x));
-	
-	// if the vector is in the third quadrant, rise is negative and run is negative, so adjust the formula to fit, rise is now negative and run is now negative
-	else if (vector.p2.x < vector.p1.x && vector.p2.y > vector.p1.y) angle = ((vector.p1.y - vector.p2.y) / (vector.p1.x - vector.p2.x))
-	
-	// if the vector is in the fourth quadrant, rise is negative but run is positive, so adjust the formula to fit, rise is now negative
-	else if (vector.p2.x > vector.p1.x && vector.p2.y > vector.p1.y) angle = ((vector.p1.y - vector.p2.y) / (vector.p2.x - vector.p1.x))
-	
-	// return angle in degrees
-	return ((Math.atan(angle)) * (180 / Math.PI));
+	// init engine for access to class method findPartWay()
+	var engine = new BranchEngine(pv1);
+	// begin with a manual branch/vector for testing
+	startingVector.draw();
+
+	// Setting up a manual new PVector part-way between startingVector's PVector1 and PVector2
+	var newPVector1 = engine.findPartWay(startingVector, 0.65);
+	var tempVector = startingVector;
+	var q = getQuadrant(getAngle(tempVector));
+
+	// Main loop
+	for (var i = 0; i < 15; i++) {
+		// PVector2 for the new vector is determined by newVector()
+		var newPVector2 = this.createNewVector(tempVector, newPVector1, 30, 30, q);
+
+		// Create vector from newPVector1 to newPVector2
+		var newVector = new Branch(newPVector1, newPVector2);
+		newVector.draw();
+
+		// Setting up next loop for newPVector1 and to pass the current vector into newVector()
+		tempVector = newVector;
+		newPVector1 = new PVector(engine.findPartWay(tempVector, 0.65));
+	}
 }
 
-var addAngle = function(angle1, angle2) { // Finds the sum of two angles
+function GETANGLE(cx, cy, ex, ey) {
+	var dy = ey - cy;
+	var dx = ex - cx;
+	var theta = Math.atan2(dy, dx); // range (-PI, PI]
+	theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+	if (theta < 0) theta = 360 + theta; // range [0, 360)
+	return Math.abs(theta);
+}
+
+function getAngle(vector) {
+	return subtractAngle(360, Math.floor(GETANGLE(vector.p1.x, vector.p1.y, vector.p2.x, vector.p2.y)));
+}
+
+var addAngle = function (angle1, angle2) { // Finds the sum of two angles
 	if (angle1 + angle2 > 360) {
 		return (angle1 + angle2) - 360;
 	} else {
@@ -68,7 +82,7 @@ var addAngle = function(angle1, angle2) { // Finds the sum of two angles
 	}
 }
 
-var subtractAngle = function(angle1, angle2) { // Finds the difference between twon angles
+var subtractAngle = function (angle1, angle2) { // Finds the difference between twon angles
 	if (angle1 - angle2 < 0) {
 		return 360 - Math.abs(angle1 - angle2);
 	} else {
@@ -77,22 +91,58 @@ var subtractAngle = function(angle1, angle2) { // Finds the difference between t
 }
 
 // This function will be placed in BranchEngine.js when finished testing here
-function newVector(vector1, angle, magnitude, engine) {
-	console.log("recived vector", vector1);
-	console.log("recived engine", engine);
+function createNewVector(vector1, p1, angle, magnitude, q) {
+	console.log("Vector quad", q);
 	vector1_angle = getAngle(vector1);
-	min = subtractAngle(vector1_angle, angle);
-	max = addAngle(vector1_angle, angle);
-	p1 = engine.findPartWay(vector1, 0.25)
-	random_angle = Math.floor(Math.random() * (max - min + 1)) + min;
-	x = p1.x + magnitude * Math.cos(random_angle);
-	y = p1.y + magnitude * Math.sin(random_angle);
+	a1 = subtractAngle(vector1_angle, angle);
+	a2 = addAngle(vector1_angle, angle);
+	min = -angle;
+	max = angle;
+	rand_int = Math.floor((Math.random() * (max - min + 1)) + min)
+	random_angle = addAngle(vector1_angle, rand_int);
+	theta = random_angle
+	console.log(`vector angle ${vector1_angle} min ${min} max ${max} rand_int ${rand_int} random ${random_angle}`);
+
+	switch (q) {
+		case 1:
+			x = p1.x + magnitude * Math.cos(Math.PI * theta / 180.0);
+			y = p1.y - magnitude * Math.sin(Math.PI * theta / 180.0);
+			break;
+		case 2:
+			x = p1.x + magnitude * Math.cos(Math.PI * theta / 180.0);
+			y = p1.y - magnitude * Math.sin(Math.PI * theta / 180.0);
+			break;
+		case 3:
+			x = p1.x + magnitude * Math.cos(Math.PI * theta / 180.0);
+			y = p1.y - magnitude * Math.sin(Math.PI * theta / 180.0);
+			break;
+
+		case 4:
+			x = p1.x + magnitude * Math.cos(Math.PI * theta / 180.0);
+			y = p1.y - magnitude * Math.sin(Math.PI * theta / 180.0);
+			break;
+
+		default:
+			break;
+	}
 	return new PVector(x, y);
 }
 
-function update() {
-
+function getQuadrant(angle) {
+	q = 0
+	if (angle >= 0 && angle <= 90) { //first quad
+		q = 1
+	} else if (angle > 90 && angle <= 180) { //second quad
+		q = 2
+	} else if (angle > 180 && angle <= 270) { //third
+		q = 3
+	} else if (angle > 270 && angle < 360) { // fourth
+		q = 4
+	}
+	return q;
 }
-function draw() {
-
+function quadrantAlignment(q, angle) {
+	if (q == 4) {
+		// if (angle)
+	}	
 }

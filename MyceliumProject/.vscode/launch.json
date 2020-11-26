@@ -8,7 +8,7 @@
       "name": "Launch Chrome 127.0.0.1",
       "type": "chrome",
       "request": "launch",
-      "port": 9295,
+      "port": 9273,
       "webRoot": "${workspaceFolder}",
       "url": "http://127.0.0.1:53506/p/MyceliumProject/src/index.html?_cmAuth\u003dkwkgmvtarz"
     }
