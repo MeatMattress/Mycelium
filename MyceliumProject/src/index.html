@@ -2,6 +2,7 @@
  <head>
   <link rel="stylesheet" href="style.css"/>
   <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src = "scripts/Button.js"></script>
   <script src = "scripts/Spore.js"></script>
   <script src = "scripts/BranchEngine.js"></script>
   <script src = "scripts/Branch.js"></script>
@@ -12,8 +13,14 @@
 </head>
 <body>
     <div id = "canvasWrapper">
-        <canvas id = "canvas"></canvas>
+        <div id = "canvasBorder">
+            <canvas id = "canvas"></canvas>
+        </div>
+        
     </div>
 </body>
+<script src = "scripts/Events/newSporeClickEvent.js"></script>
+<script src = "scripts/EventHandlers.js"></script>
 <script src = "scripts/Testing.js"></script>
+<script src = "scripts/GameLoop.js"></script>
 </html>

@@ -1,13 +1,18 @@
 
 #canvasWrapper, body {
     background-color: white;
-    width: 100%;
-    height: 100%;
     padding: 0;
     margin: 0;
+}
+#canvasWrapper {
+    display:flex;
+    justify-content: center;
+}
+#canvasBorder {
+    border: 2px solid #DAB420;
+    margin-top: 2%;
 }
 #canvas {
     padding: 0;
     margin: 0;
-    border: 1px solid #d3d3d3;
 }

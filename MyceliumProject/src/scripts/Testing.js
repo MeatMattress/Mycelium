@@ -1,34 +1,17 @@
 $(document).ready(() => {
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext('2d');
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	var width = canvas.width;
-	var height = canvas.height;
-	var center = new PVector(width / 2, height / 2);
-
-
-	var pv1 = new Spore(new PVector(center.x - 3, center.y - 3));
-	pv1.draw("#FF0000"); // This is your starting PVector1, shown in red.
-	var branch1 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y + 1));
-	var branch2 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y - 1));
-	var branch3 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y + 1));
-	var branch4 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y - 1));
-	var branch5 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y + 1));
-	var branch6 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y - 1));
-	var branch7 = new Branch(new PVector(center.x, center.y), new PVector(center.x + 1, center.y - 1));
-	var branch8 = new Branch(new PVector(center.x, center.y), new PVector(center.x - 1, center.y + 1));
-
-	test(pv1.p, branch1); // Spore.p = PVector
-	test(pv1.p, branch2);
-	test(pv1.p, branch3);
-	test(pv1.p, branch4);
-	test(pv1.p, branch5);
-	test(pv1.p, branch6);
-	test(pv1.p, branch7);
-	test(pv1.p, branch8);
-
+	window.canvas = document.getElementById("canvas");
+	window.ctx = canvas.getContext('2d');
+	canvas.width = window.innerWidth *(9/10);
+	canvas.height = window.innerHeight *(9/10);
+	var gameLoop = new GameLoop();
+	gameLoop.init();
 });
+
+function getRandomInt(min, max) { // gets a random number between min and max (height and width, usually)
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+	}
 
 /*
 	Should create 16 branching vectors pointing in VERY similar directions
@@ -92,7 +75,7 @@ var subtractAngle = function (angle1, angle2) { // Finds the difference between 
 
 // This function will be placed in BranchEngine.js when finished testing here
 function createNewVector(vector1, p1, angle, magnitude, q) {
-	console.log("Vector quad", q);
+	//console.log("Vector quad", q);
 	vector1_angle = getAngle(vector1);
 	a1 = subtractAngle(vector1_angle, angle);
 	a2 = addAngle(vector1_angle, angle);
@@ -101,7 +84,7 @@ function createNewVector(vector1, p1, angle, magnitude, q) {
 	rand_int = Math.floor((Math.random() * (max - min + 1)) + min)
 	random_angle = addAngle(vector1_angle, rand_int);
 	theta = random_angle
-	console.log(`vector angle ${vector1_angle} min ${min} max ${max} rand_int ${rand_int} random ${random_angle}`);
+	//console.log(`vector angle ${vector1_angle} min ${min} max ${max} rand_int ${rand_int} random ${random_angle}`);
 
 	switch (q) {
 		case 1:
@@ -140,9 +123,4 @@ function getQuadrant(angle) {
 		q = 4
 	}
 	return q;
-}
-function quadrantAlignment(q, angle) {
-	if (q == 4) {
-		// if (angle)
-	}	
 }
