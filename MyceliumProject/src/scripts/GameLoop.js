@@ -1,24 +1,12 @@
 
-
-function init(){
-	var FPS = 30;
-	// load content
-	var device = this.getDevice();
-	var buttons = this.createButtons();
-	this.createEvents(buttons);
-
-
-	// start game loop
-	//setInterval(this, 1000/FPS);
-
-}
-
-function GameLoop() {
+function setup() {
 	var FPS = 30;
 	// load content
 	var device = this.getDevice();
 	var buttons = this.createButtons();
 	createEvents(buttons);
+
+	//setInterval(Some variable, 1000/FPS);
 }
 
 function createButtons(){

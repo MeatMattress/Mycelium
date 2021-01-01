@@ -1,10 +1,13 @@
-$(document).ready(() => {
+
+document.addEventListener("DOMContentLoaded", function() { 
 	window.canvas = document.getElementById("canvas");
 	window.ctx = canvas.getContext('2d');
 	canvas.width = window.innerWidth *(9/10);
 	canvas.height = window.innerHeight *(9/10);
-	var gameLoop = new GameLoop();
-	gameLoop.init();
+	setup();
+	var spore = new Spore(new PVector(canvas.width/2, canvas.height/2));
+	var startingVector = new Branch(new PVector(canvas.width/2, canvas.height/2), new PVector(canvas.width / 2 + 20, canvas.height/2 - 20));
+	test(spore, startingVector);
 });
 
 function getRandomInt(min, max) { // gets a random number between min and max (height and width, usually)
