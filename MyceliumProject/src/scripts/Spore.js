@@ -6,6 +6,7 @@ class Spore {
 		this.ctx = canvas.getContext('2d');
 		this.canvasHeight = this.canvas.height;
 		this.canvasWidth = this.canvas.width;
+		this.radius = 3;
 	}
 
 	push(branch) {
@@ -14,7 +15,10 @@ class Spore {
 
 	draw(color = "#FF0000") {
 		this.ctx.fillStyle = color;
-		this.ctx.fillRect(this.p.x, this.p.y, 5, 5);
+		this.ctx.beginPath();
+		this.ctx.arc(this.p.x, this.p.y, this.radius, 0, 2*Math.PI)
+		this.ctx.closePath();
+		this.ctx.fill();
 	}
 	
 }
