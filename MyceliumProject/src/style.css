@@ -8,9 +8,29 @@
     display:flex;
     justify-content: center;
 }
-#canvasBorder {
-    border: 2px solid #DAB420;
-    margin-top: 2%;
+#buttons {
+background-color: silver;
+  position:absolute;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 5%;
+  top:95%;
+}
+
+.button {
+    background-color: cyan;
+    width: 100%;
+    font-size: 3vw;
+}
+
+#options {
+    visibility: hidden;
+    background-color: aqua;
+  position:absolute;
+  width: 100%;
+  height: 5%;
+  top:90%
 }
 #canvas {
     padding: 0;

@@ -1,51 +1,79 @@
-
 function setup() {
 	var FPS = 30;
-	// load content
-	var device = this.getDevice();
-	var buttons = this.createButtons();
-	createEvents(buttons);
+	pause = true;
+	canvas = document.getElementById("canvas");
+	ctx = canvas.getContext('2d');
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight - (window.innerHeight - document.getElementById("buttons").getBoundingClientRect().top);
+	
+	activeButton = null;
+	spores = [];
+	foodNodes = [];
+	maxRoots = 100;
+	maxLength = 20;
 
-	//setInterval(Some variable, 1000/FPS);
+	branchMagnitude = 20;
+	newBranchAngle = 10;
+	
+	clearCanvas();
+	interval = setInterval(draw, 1000/FPS);
 }
 
-function createButtons(){
-	var x = canvas.width / 4;
-	var y = canvas.height - canvas.height/10;
-	var buttons = {};
-	buttons["New Spore"] = new Button("New Spore","#93EBFB", PVector(0, y), x, canvas.height / 10);
-	buttons["New Food Pellet"] = new Button("New Food Pellet", "#93EBFB", PVector(x, y), x, canvas.height / 10);
-	buttons["Run Simulation"] = new Button("Run Simulation", "#93EBFB", PVector(x*2, y), x, canvas.height / 10);
-	buttons["Reset"] = new Button("Reset", "#93EBFB", PVector(x*3, y), x, canvas.height / 10);
-	
-	return buttons;
+function clearCanvas() {
+	ctx.fillStyle="#000000";
+	ctx.fillRect(0,0,canvas.width, canvas.height);
 }
+
+function draw() {
+	if (pause) return;
 	
-function createEvents(buttons) { // Add event listeners
-	var activeButtons = {};
-	canvas.addEventListener("click", (e) => {
-		Object.keys(buttons).forEach((btn) => { // add all currently active buttons
-			if (buttons[btn].selected == true) activeButtons[btn] = buttons[btn];
-		});
-		Object.keys(buttons).forEach((btn) => { // Button handling first
-			if (this.isInside(this.getMousePos(e, canvas), buttons[btn])) { // cursor clicked inside button
-				buttons[btn].selected = true;
-				activeButtons[btn] = buttons[btn];
-				canvas.dispatchEvent(new CustomEvent("buttonClick", {
-					bubbles: true,
-					detail: {
-						type: btn,
-						buttons: buttons,
-						activeButtons: activeButtons // Sent to handler to determine which buttons are active
-					}
-				}));
+	for (var i=0;i<spores.length; i++) {  // Initial roots
+		while (spores[i].roots.length < maxRoots) {
+			var branch = randomBranch(spores[i], branchMagnitude);
+			spores[i].roots.push(branch);
+			branch.draw();
+		}
+	}
+
+	for (var i=0;i<spores.length; i++) {
+		if (spores[i].branchLength < maxLength) {
+			for (var j = 0; j < spores[i].roots.length; j++) {
+				var currentBranch = getLeafChild(spores[i].roots[j]);
+					var p1 = currentBranch.p2;
+					var p2 = createNewVector(currentBranch, p1, newBranchAngle, branchMagnitude, getQuadrant(getAngle(currentBranch)));
+
+					var newBranch = new Branch(p1, p2);
+					addChild(currentBranch, newBranch);
+					newBranch.draw();
 			}
-		});
-		// (TODO (3)) A button was not clicked. Therefore simulation area was clicked. Dispatch event.
-	});
+			spores[i].branchLength++;
+		}
+	}
+	
+	
+
 }
 
-function getDevice(){
+function getLeafChild(root) {
+	if (root.child == null) {
+		return root;
+	}
+	else {
+		return getLeafChild(root.child);
+	}
+}
+
+function addChild(branch, child) {
+	if (branch.child != null) {
+		addChild(branch.child, child);
+	}
+	else {
+		branch.child = child;
+		child.draw();
+	}
+}
+
+function getDevice(){ // Used to render font
 	var media="desktop";
 	if(screen.width<=480){
 		media="phone";
@@ -56,27 +84,3 @@ function getDevice(){
 	}
 	return media;
 }
-
-
-function update() {
-	frame = window.requestAnimationFrame(update);
-	draw();
-}
-
-function draw() {
-
-}
-
-function test(){
-	console.log("Test");
-}
-
-function getMousePos(e, canvas) {
-	var rect = canvas.getBoundingClientRect();
-	return new PVector(e.clientX - rect.left, e.clientY - rect.top);
-}
-//Function to check whether a point is inside a rectangle
-function isInside(pos, button){
-	return pos.x > button.p.x && pos.x < button.w + button.p.x && pos.y > button.p.y && pos.y < button.h + button.p.y
-}
-

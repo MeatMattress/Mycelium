@@ -8,7 +8,6 @@ class Button {
 		this.selected = false;
 
 		this.drawButton(this.color);
-		//this.logDetails();
 	}
 
 	drawButton(color) {
@@ -22,34 +21,5 @@ class Button {
 		ctx.textBaseline = "middle";
 		ctx.font = "20px Times";
 		ctx.fillText(this.type, this.p.x + this.w/2, this.p.y + this.h/2);
-	}
-
-	trigger() { // BUTTON EVENTHANDLER
-		console.log("Triggered"); // bugggggged
-
-		switch(this.type) {
-			case "New Spore" :
-				this.selected = !this.selected;
-				this.color == "#76e393" ? this.color = "#93EBFB" : this.color = "#76e393";
-				this.drawButton(this.color);
-				
-				
-				break;
-			case "New Food Pellet" : 
-				this.selected = !this.selected;
-				this.color == "#ACDF86" ? this.color = "#93EBFB" : this.color = "#ACDF86";
-				this.drawButton(this.color);
-				break;
-			case "Run Simulation" :
-				this.selected = true;
-				this.color == "#76e393";
-				this.drawButton(this.color);
-				// Run sim
-				break;
-			case "Reset" :
-
-				//redraw
-				break;
-		}
 	}
 }

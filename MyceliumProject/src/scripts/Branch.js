@@ -1,9 +1,9 @@
 class Branch {
-	constructor(PVector1, PVector2, children, parents) {
+	constructor(PVector1, PVector2) {
 		this.p1 = PVector1;
 		this.p2 = PVector2;
-		this.children = children;
-		this.parents = parents;
+		this.child = null;
+		this.parent = null;
 	}
 
 	draw(color = "#00FF00") {

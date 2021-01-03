@@ -2,25 +2,27 @@
  <head>
   <link rel="stylesheet" href="style.css"/>
   <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src = "scripts/Button.js"></script>
   <script src = "scripts/Spore.js"></script>
-  <script src = "scripts/BranchEngine.js"></script>
   <script src = "scripts/Branch.js"></script>
   <script src = "scripts/CollisionDetection.js"></script>
   <script src = "scripts/FoodNode.js"></script>
   <script src = "scripts/PVector.js"></script>
+  <script src = "scripts/VectorMath.js"></script>
   <title>Mycelium Project</title>
 </head>
 <body>
     <div id = "canvasWrapper">
-        <div id = "canvasBorder">
-            <canvas id = "canvas"></canvas>
+        <canvas id = "canvas" onClick="canvasClick(event)"></canvas>
+        <div id = "options"></div>
+        <div id = "buttons">
+            <button id = "newSpore" class = "button" onClick="toggleButton(this.id)">New Spore</button>
+            <button id = "newFoodPellet" class = "button" onClick="toggleButton(this.id)">New Food Pellet</button>
+            <button id = "toggleSimulation" class = "button" onClick="toggleButton(this.id)">Start / Stop</button>
+            <button id = "reset" class = "button" onClick="toggleButton(this.id)">Reset</button>
         </div>
-        
     </div>
+    <script src = "scripts/EventHandlers.js"></script>
+    <script src = "scripts/GameLoop.js"></script>
+    <script src = "scripts/mainActivity.js"></script>
 </body>
-<script src = "scripts/Events/newSporeClickEvent.js"></script>
-<script src = "scripts/EventHandlers.js"></script>
-<script src = "scripts/GameLoop.js"></script>
-<script src = "scripts/mainActivity.js"></script>
 </html>

@@ -1,5 +1,5 @@
 class FoodNode {
-	constructor(PVector = this.randomNodeVector(document.getElementById("canvas").width, document.getElementById("canvas").height), radius = this.randomRadius()) {
+	constructor(PVector = this.randomNodeVector(canvas.width, canvas.height), radius = randomRadius(10, 15)) {
 		this.p = PVector;
 		this.radius = radius;
 
@@ -23,16 +23,4 @@ class FoodNode {
 		var y = this.getRandomInt(10, height - 10);
 		return new PVector(x, y); // default random vector generates vector between height and width of canvas
 	}
-
-	getRandomInt(min, max) { // gets a random number between min and max (height and width, usually)
-		min = Math.ceil(min);
-		max = Math.floor(max);
-		return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-	}
-
-	randomRadius(){
-		return this.getRandomInt(10, 30);
-	}
-
-
 }
