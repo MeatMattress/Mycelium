@@ -42,3 +42,14 @@ function canvasClick(e){
 			break;
 	}
 }
+
+window.onresize = function()
+{
+    var canvas = document.getElementById('canvas');
+    canvas.width = window.innerWidth;
+    canvas.style.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+	canvas.style.height = window.innerHeight;
+	
+	redraw();
+}

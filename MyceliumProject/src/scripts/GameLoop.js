@@ -33,19 +33,13 @@ function setup() {
 	foodNodes = [];
 
 	maxRoots = 100;
-	maxLength = 100;
-	branchMagnitude = 5;
+	maxLength = 50;
+	branchMagnitude = 10;
 	newBranchAngle = 10;
 
 	colorIterator = 0;
 	
-	clearCanvas();
 	interval = setInterval(draw, 1000/interval);
-}
-
-function clearCanvas() {
-	ctx.fillStyle="#000000";
-	ctx.fillRect(0,0,canvas.width, canvas.height);
 }
 
 function draw() {
@@ -54,8 +48,9 @@ function draw() {
 	for (var i=0;i<spores.length; i++) {  // Initial roots
 		while (spores[i].roots.length < maxRoots) {
 			var branch = randomBranch(spores[i], branchMagnitude);
+			branch.color = colorList[colorIterator];
 			spores[i].roots.push(branch);
-			branch.draw(colorList[colorIterator]);
+			branch.draw();
 		}
 	}
 	for (var i=0;i<spores.length; i++) {
@@ -66,8 +61,9 @@ function draw() {
 					var p2 = createNewVector(currentBranch, p1, newBranchAngle, branchMagnitude, getQuadrant(getAngle(currentBranch)));
 
 					var newBranch = new Branch(p1, p2);
+					newBranch.color = colorList[colorIterator];
 					addChild(currentBranch, newBranch);
-					newBranch.draw(colorList[colorIterator]);
+					newBranch.draw();
 					
 			}
 			
@@ -84,6 +80,20 @@ function draw() {
 	
 	
 
+}
+
+function redraw(){ // onResize
+	for (var i=0;i<spores.length;i++) {
+		spores[i].draw();
+		for (var j=0;j<spores[i].roots.length;j++) {
+			spores[i].roots[j].draw();
+			var currChild = spores[i].roots[j].child;
+			while (currChild != null) {
+				currChild.draw();
+				currChild = currChild.child;
+			}
+		}
+	}
 }
 
 function getLeafChild(root) {

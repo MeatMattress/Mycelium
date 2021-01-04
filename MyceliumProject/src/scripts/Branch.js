@@ -4,9 +4,10 @@ class Branch {
 		this.p2 = PVector2;
 		this.child = null;
 		this.parent = null;
+		this.color = "#00FF00";
 	}
 
-	draw(color = "#00FF00") {
+	draw(color = this.color) {
 		ctx.strokeStyle = color;
 		ctx.beginPath();
 		ctx.moveTo(this.p1.x, this.p1.y);

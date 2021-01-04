@@ -1,5 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function() {
+	FastClick.attach(document.body);
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext('2d');
 	// 360 hex codes representing HSL colors to save time calculating the conversion
