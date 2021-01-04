@@ -1,22 +1,46 @@
 function setup() {
-	var FPS = 30;
+	var interval = 30;
 	pause = true;
-	canvas = document.getElementById("canvas");
-	ctx = canvas.getContext('2d');
 	canvas.width = window.innerWidth
 	canvas.height = window.innerHeight - (window.innerHeight - document.getElementById("buttons").getBoundingClientRect().top);
+
+	
+	var btns = document.getElementsByClassName("button"); // Set / reset button background colors
+	for (var i = 0;i<btns.length;i++) {
+		btns[i].style.backgroundColor = "#00FFFF";
+	}
+
+	switch(getDevice()) { // Determine best button font
+		case "phone":
+			for (var i = 0;i<btns.length;i++) {
+				btns[i].style.fontSize = parseInt((window.innerHeight / document.getElementById("buttons").getBoundingClientRect().height) * 1.25)+"px";
+			}
+			break;
+		case "desktop":
+			for (var i = 0;i<btns.length;i++) {
+				btns[i].style.fontSize = "2vmax";
+			}
+			break;
+		case "tablet":
+			for (var i = 0;i<btns.length;i++) {
+				btns[i].style.fontSize = "2vmax";
+			}
+			break;
+	}
 	
 	activeButton = null;
 	spores = [];
 	foodNodes = [];
-	maxRoots = 100;
-	maxLength = 20;
 
-	branchMagnitude = 20;
+	maxRoots = 100;
+	maxLength = 100;
+	branchMagnitude = 5;
 	newBranchAngle = 10;
+
+	colorIterator = 0;
 	
 	clearCanvas();
-	interval = setInterval(draw, 1000/FPS);
+	interval = setInterval(draw, 1000/interval);
 }
 
 function clearCanvas() {
@@ -26,15 +50,14 @@ function clearCanvas() {
 
 function draw() {
 	if (pause) return;
-	
+
 	for (var i=0;i<spores.length; i++) {  // Initial roots
 		while (spores[i].roots.length < maxRoots) {
 			var branch = randomBranch(spores[i], branchMagnitude);
 			spores[i].roots.push(branch);
-			branch.draw();
+			branch.draw(colorList[colorIterator]);
 		}
 	}
-
 	for (var i=0;i<spores.length; i++) {
 		if (spores[i].branchLength < maxLength) {
 			for (var j = 0; j < spores[i].roots.length; j++) {
@@ -44,11 +67,20 @@ function draw() {
 
 					var newBranch = new Branch(p1, p2);
 					addChild(currentBranch, newBranch);
-					newBranch.draw();
+					newBranch.draw(colorList[colorIterator]);
+					
 			}
+			
+			
 			spores[i].branchLength++;
 		}
+		
 	}
+	var step = Math.ceil(360 / maxLength);
+	colorIterator = (colorIterator + step)% 360;
+
+	
+	
 	
 	
 

@@ -1,31 +1,30 @@
 function toggleButton(id) {
-	var btn = document.getElementById(id);
-	if (activeButton === null) {
-		activeButton = id;
-		btn.style.backgroundColor="#76e393"
-	}
-	else if (activeButton === id && id != "toggleSimulation") { // button is already selected, toggle off.
-		btn.style.backgroundColor="#00FFFF"
-		activeButton = null;
-	}
-	else { 
-		document.getElementById(activeButton).style.backgroundColor = "#00FFFF"; // switching buttons
-		activeButton = id;
-		btn.style.backgroundColor="#76e393"
-	}
-
-	switch(activeButton) { // Run and Reset buttons
-		case "toggleSimulation":
-			if (pause) btn.style.backgroundColor="#76e393"
-			else btn.style.backgroundColor="#00FFFF"
-			pause = !pause;
-			draw();
-			break;
-		case "reset":
-			setTimeout(() => {document.getElementById(activeButton).style.backgroundColor = "#00FFFF"; setup();}, 50)
-			break;
-	}
-
+	var btnElement = document.getElementById(id);
+		switch(id) {
+			case activeButton: // button is already selected, toggle off.
+				btnElement.style.backgroundColor="#00FFFF"
+				activeButton = null;
+				break;
+			case "reset":
+				btnElement.style.backgroundColor = "#76e393"
+				setTimeout(() => {btnElement.style.backgroundColor = "#00FFFF"; setup();}, 50)
+				break;
+			case "toggleSimulation":
+				if (pause) btnElement.style.backgroundColor="#ff4040"
+				else btnElement.style.backgroundColor="#00FFFF"
+				pause = !pause;
+				break;
+			case "newSpore":
+				if (activeButton != null) document.getElementById(activeButton).style.backgroundColor = "#00FFFF"
+				activeButton = id;
+				btnElement.style.backgroundColor="#76e393"
+				break;
+			case "newFoodPellet":
+				if (activeButton != null) document.getElementById(activeButton).style.backgroundColor = "#00FFFF"
+				activeButton = id;
+				btnElement.style.backgroundColor="#76e393"
+				break;
+		}
 }
 
 function canvasClick(e){
