@@ -37,8 +37,18 @@ function canvasClick(e){
 			break;
 		case "newFoodPellet":
 			var foodNode = new FoodNode(getMousePos(e,canvas));
-			foodNodes.push(foodNode);
 			foodNode.draw();
+			foodNodes.push(foodNode);
+			for (var i = 0; i < spores.length; i++) {
+				for (var r = 0; r < spores[i].roots.length; r++) {
+					checkEaten(spores[i].roots[r], foodNode);
+					var c = spores[i].roots[r].child;
+					while (c != null) {
+						checkEaten(c, foodNode);
+						c = c.child;
+					}
+				}
+			}
 			break;
 	}
 }

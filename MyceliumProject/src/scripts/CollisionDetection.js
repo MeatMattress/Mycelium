@@ -49,6 +49,6 @@ function collisionBranchFoodNode(branch, foodNode){
           intersectionPoint.y = branch.p1.y + v1.y * u1;
       }
       if ($.isEmptyObject(intersectionPoint)) return false; // none found on the segment either
-      return intersectionPoint;
+      return true;
     } // Return a object with the x and y coordinates of the intersection
 }

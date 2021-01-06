@@ -1,5 +1,5 @@
 function setup() {
-	var interval = 30;
+	var interval = 40;
 	pause = true;
 	canvas.width = window.innerWidth
 	canvas.height = window.innerHeight - (window.innerHeight - document.getElementById("buttons").getBoundingClientRect().top);
@@ -32,7 +32,7 @@ function setup() {
 	spores = [];
 	foodNodes = [];
 
-	maxRoots = 100;
+	maxRoots = 200;
 	maxLength = 50;
 	branchMagnitude = 10;
 	newBranchAngle = 10;
@@ -48,6 +48,10 @@ function draw() {
 	for (var i=0;i<spores.length; i++) {  // Initial roots
 		while (spores[i].roots.length < maxRoots) {
 			var branch = randomBranch(spores[i], branchMagnitude);
+			branch.tail = branch;
+			for (var f=0; f< foodNodes.length; f++) {
+				checkEaten(branch, foodNodes[f]);
+			}
 			branch.color = colorList[colorIterator];
 			spores[i].roots.push(branch);
 			branch.draw();
@@ -56,30 +60,36 @@ function draw() {
 	for (var i=0;i<spores.length; i++) {
 		if (spores[i].branchLength < maxLength) {
 			for (var j = 0; j < spores[i].roots.length; j++) {
-				var currentBranch = getLeafChild(spores[i].roots[j]);
-					var p1 = currentBranch.p2;
-					var p2 = createNewVector(currentBranch, p1, newBranchAngle, branchMagnitude, getQuadrant(getAngle(currentBranch)));
-
-					var newBranch = new Branch(p1, p2);
-					newBranch.color = colorList[colorIterator];
-					addChild(currentBranch, newBranch);
-					newBranch.draw();
-					
+				var currentBranch = spores[i].roots[j].tail;
+				var p1 = currentBranch.p2;
+				var p2 = createNewVector(currentBranch, p1, newBranchAngle, branchMagnitude, getQuadrant(getAngle(currentBranch)));
+				var newBranch = new Branch(p1, p2);
+				spores[i].roots[j].tail = newBranch;
+				newBranch.color = colorList[colorIterator];
+				currentBranch.child = newBranch;
+				newBranch.draw();
+				for (var f=0; f< foodNodes.length; f++) {
+					checkEaten(newBranch, foodNodes[f]);
+				}
 			}
-			
-			
 			spores[i].branchLength++;
 		}
 		
 	}
 	var step = Math.ceil(360 / maxLength);
 	colorIterator = (colorIterator + step)% 360;
+}
 
-	
-	
-	
-	
 
+function checkEaten(branch, foodNode) {
+	if (foodNode.eaten === false) {
+		if (collisionBranchFoodNode(branch, foodNode)) {
+			foodNode.eaten = true;
+			foodNode.draw();
+			var newGrowth = new Spore(foodNode.p);
+			spores.push(newGrowth);
+		}
+	}
 }
 
 function redraw(){ // onResize
@@ -94,26 +104,11 @@ function redraw(){ // onResize
 			}
 		}
 	}
-}
-
-function getLeafChild(root) {
-	if (root.child == null) {
-		return root;
-	}
-	else {
-		return getLeafChild(root.child);
+	for (var f = 0; f < foodNodes.length; f++) {
+		foodNodes[f].draw();
 	}
 }
 
-function addChild(branch, child) {
-	if (branch.child != null) {
-		addChild(branch.child, child);
-	}
-	else {
-		branch.child = child;
-		child.draw();
-	}
-}
 
 function getDevice(){ // Used to render font
 	var media="desktop";

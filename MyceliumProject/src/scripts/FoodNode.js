@@ -2,10 +2,13 @@ class FoodNode {
 	constructor(PVector = this.randomNodeVector(canvas.width, canvas.height), radius = randomRadius(10, 15)) {
 		this.p = PVector;
 		this.radius = radius;
+		this.eaten = false;
+		this.color;
 	}
 
 	draw() {
-		ctx.fillStyle = "#FF0000";
+		this.color = this.eaten == false ? "#FF0000" : "#FFFFFF";
+		ctx.fillStyle = this.color;
 		ctx.strokeStyle = "#00FF00";
 		ctx.beginPath(this.x,this.y);
 		ctx.arc(this.p.x,this.p.y, this.radius, 0, Math.PI * 2);

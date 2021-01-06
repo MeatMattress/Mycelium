@@ -5,6 +5,7 @@ class Branch {
 		this.child = null;
 		this.parent = null;
 		this.color = "#00FF00";
+		this.tail = null;
 	}
 
 	draw(color = this.color) {
